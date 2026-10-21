@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gifts Tracker Settings</title>
+    <title>Telegram Gifts Tracker</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -20,7 +20,7 @@
             color: var(--tg-theme-text-color, var(--text-color));
             margin: 0; padding: 16px; box-sizing: border-box;
         }
-        .container { max-width: 400px; margin: 0 auto; }
+        .container { max-width: 420px; margin: 0 auto; }
         h2 { text-align: center; font-size: 20px; margin-bottom: 20px; }
         .card {
             background-color: var(--tg-theme-secondary-bg-color, var(--card-bg));
@@ -38,27 +38,44 @@
             background-color: var(--tg-theme-button-color, var(--btn-color));
             color: var(--tg-theme-button-text-color, #fff); font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
+        .note { font-size: 11px; color: #888; margin-top: -6px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>🎁 Настройки отслеживания</h2>
+        <h2>🎁 Настройки фильтров подарков</h2>
+        
         <div class="card">
-            <label for="giftType">Выберите подарок:</label>
+            <label for="giftType">Выберите подарок из списка:</label>
             <select id="giftType">
-                <option value="ALL">🌟 Все подарки</option>
+                <option value="ALL">🌟 ВСЕ Подарки (Любые)</option>
+                <option value="CupidCharm">💘 CupidCharm</option>
                 <option value="Red Star">⭐ Red Star</option>
+                <option value="Green Star">🟢 Green Star</option>
                 <option value="Teddy Bear">🧸 Teddy Bear</option>
                 <option value="Peach">🍑 Peach</option>
-                <option value="Diamond">💎 Diamond</option>
+                <option value="Kissed Frog">🐸 Kissed Frog</option>
+                <option value="Delicious Cake">🎂 Delicious Cake</option>
+                <option value="Heart">❤️ Heart</option>
+                <option value="Gold Ring">💍 Gold Ring</option>
+                <option value="Magic Potion">🧪 Magic Potion</option>
+                <option value="Spooky Pumpkin">🎃 Spooky Pumpkin</option>
             </select>
+            
+            <label for="customGift">Или введите название вручную (если нового нет в списке):</label>
+            <input type="text" id="customGift" placeholder="Например: StarBox">
+            <div class="note">Если поле заполнено, приоритет отдается введенному тексту.</div>
 
-            <label for="bgType">Выберите фон:</label>
+            <label for="bgType">Выберите фон (оформление):</label>
             <select id="bgType">
-                <option value="ALL">🎨 Все фоны</option>
+                <option value="ALL">🎨 ВСЕ Фоны (Любые)</option>
+                <option value="Standard">⚪ Стандартный</option>
                 <option value="Black Neon">🖤 Black Neon</option>
-                <option value="Gold">🟡 Gold</option>
-                <option value="Cyber">🟦 Cyber</option>
+                <option value="Gold">🟡 Gold / Золотой</option>
+                <option value="Cyber">🟦 Cyber / Неоновый синий</option>
+                <option value="Red">🔴 Red / Кровавый</option>
+                <option value="Emerald">🟢 Emerald / Изумрудный</option>
+                <option value="Purple">🟣 Purple / Фиолетовый</option>
             </select>
         </div>
 
@@ -66,7 +83,7 @@
             <label>Диапазон стоимости (TON):</label>
             <div class="price-group">
                 <input type="number" id="minPrice" placeholder="Мин" value="0">
-                <input type="number" id="maxPrice" placeholder="Макс" value="10000">
+                <input type="number" id="maxPrice" placeholder="Макс" value="50000">
             </div>
         </div>
 
@@ -79,20 +96,22 @@
         tg.expand();
 
         document.getElementById('saveBtn').addEventListener('click', function() {
-            let gift = document.getElementById('giftType').value;
+            let giftSelect = document.getElementById('giftType').value;
+            let customGift = document.getElementById('customGift').value.trim();
             let bg = document.getElementById('bgType').value;
             let minP = document.getElementById('minPrice').value || 0;
-            let maxP = document.getElementById('maxPrice').value || 10000;
+            let maxP = document.getElementById('maxPrice').value || 50000;
+
+            let finalGift = customGift !== "" ? customGift : giftSelect;
 
             let settingsData = {
                 action: "save_settings",
-                gift_type: gift,
+                gift_type: finalGift,
                 background: bg,
                 min_price: parseFloat(minP),
                 max_price: parseFloat(maxP)
             };
 
-            // Передаем данные боту
             tg.sendData(JSON.stringify(settingsData));
             tg.close();
         });
