@@ -2,118 +2,277 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Gifts Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Telegram NFT Gifts Tracker</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
+            --bg-color: #18222d;
+            --card-bg: #212e3e;
             --text-color: #ffffff;
-            --hint-color: #aaaaaa;
-            --btn-color: #2481cc;
-            --input-bg: #2a2a2a;
+            --hint-color: #8a9ba8;
+            --btn-color: #2ea6ff;
+            --btn-text: #ffffff;
+            --input-bg: #131a22;
+            --border-color: rgba(255, 255, 255, 0.1);
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--tg-theme-bg-color, var(--bg-color));
             color: var(--tg-theme-text-color, var(--text-color));
-            margin: 0; padding: 16px; box-sizing: border-box;
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
         }
-        .container { max-width: 420px; margin: 0 auto; }
-        h2 { text-align: center; font-size: 20px; margin-bottom: 20px; }
-        .card {
+        .wrapper {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        h2 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .section-card {
             background-color: var(--tg-theme-secondary-bg-color, var(--card-bg));
-            padding: 16px; border-radius: 12px; margin-bottom: 16px;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--hint-color); font-weight: 500; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--tg-theme-hint-color, var(--hint-color));
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         select, input {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-            background-color: var(--input-bg); color: #fff; font-size: 15px; box-sizing: border-box; margin-bottom: 12px; outline: none;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 15px;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        .price-group { display: flex; gap: 10px; }
-        .price-group input { margin-bottom: 0; }
-        .btn-save {
-            width: 100%; padding: 14px; border-radius: 10px; border: none;
+        select:focus, input:focus {
+            border-color: var(--btn-color);
+        }
+        .price-row {
+            display: flex;
+            gap: 12px;
+        }
+        .price-row > div {
+            flex: 1;
+        }
+        .price-row input {
+            margin-bottom: 0;
+        }
+        .hint-text {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, var(--hint-color));
+            margin-top: -6px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
             background-color: var(--tg-theme-button-color, var(--btn-color));
-            color: var(--tg-theme-button-text-color, #fff); font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
+            color: var(--tg-theme-button-text-color, var(--btn-text));
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(46, 166, 255, 0.4);
+            transition: opacity 0.2s, transform 0.1s;
         }
-        .note { font-size: 11px; color: #888; margin-top: -6px; margin-bottom: 12px; }
+        .submit-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🎁 Настройки фильтров подарков</h2>
+    <div class="wrapper">
+        <h2>🎯 Настройка фильтров трекера</h2>
         
-        <div class="card">
-            <label for="giftType">Выберите подарок из списка:</label>
-            <select id="giftType">
+        <div class="section-card">
+            <label for="giftSelect">Коллекция / Подарок</label>
+            <select id="giftSelect">
                 <option value="ALL">🌟 ВСЕ Подарки (Любые)</option>
-                <option value="CupidCharm">💘 CupidCharm</option>
-                <option value="Red Star">⭐ Red Star</option>
-                <option value="Green Star">🟢 Green Star</option>
-                <option value="Teddy Bear">🧸 Teddy Bear</option>
-                <option value="Peach">🍑 Peach</option>
-                <option value="Kissed Frog">🐸 Kissed Frog</option>
-                <option value="Delicious Cake">🎂 Delicious Cake</option>
-                <option value="Heart">❤️ Heart</option>
-                <option value="Gold Ring">💍 Gold Ring</option>
-                <option value="Magic Potion">🧪 Magic Potion</option>
-                <option value="Spooky Pumpkin">🎃 Spooky Pumpkin</option>
+                <optgroup label="🔥 Популярные коллекции">
+                    <option value="PlushPepe">Plush Pepe</option>
+                    <option value="ScaredCat">Scared Cat</option>
+                    <option value="SwissWatch">Swiss Watch</option>
+                    <option value="AstralShard">Astral Shard</option>
+                    <option value="HeartLocket">Heart Locket</option>
+                    <option value="ToyBear">Toy Bear</option>
+                    <option value="SnoopDogg">Snoop Dogg</option>
+                    <option value="DurovsCap">Durov's Cap</option>
+                    <option value="DurovsGlasses">Durov's Glasses</option>
+                    <option value="LibertyFigure">Liberty Figure</option>
+                    <option value="CupidCharm">Cupid Charm</option>
+                </optgroup>
+                <optgroup label="🎁 Остальные коллекции">
+                    <option value="ArtisanBrick">Artisan Brick</option>
+                    <option value="BDayCandle">B-Day Candle</option>
+                    <option value="BerryBox">Berry Box</option>
+                    <option value="BondedRing">Bonded Ring</option>
+                    <option value="BowTie">Bow Tie</option>
+                    <option value="BunnyMuffin">Bunny Muffin</option>
+                    <option value="CandyCane">Candy Cane</option>
+                    <option value="ChillFlame">Chill Flame</option>
+                    <option value="CloverPin">Clover Pin</option>
+                    <option value="CookieHeart">Cookie Heart</option>
+                    <option value="CrystalBall">Crystal Ball</option>
+                    <option value="DiamondRing">Diamond Ring</option>
+                    <option value="EasterEgg">Easter Egg</option>
+                    <option value="ElectricSkull">Electric Skull</option>
+                    <option value="EternalCandle">Eternal Candle</option>
+                    <option value="EternalRose">Eternal Rose</option>
+                    <option value="EvilEye">Evil Eye</option>
+                    <option value="FaithAmulet">Faith Amulet</option>
+                    <option value="FinePen">Fine Pen</option>
+                    <option value="FlyingBroom">Flying Broom</option>
+                    <option value="FreshSocks">Fresh Socks</option>
+                    <option value="GenieLamp">Genie Lamp</option>
+                    <option value="GingerCookie">Ginger Cookie</option>
+                    <option value="HangingStar">Hanging Star</option>
+                    <option value="HappyBrownie">Happy Brownie</option>
+                    <option value="HeroicHelmet">Heroic Helmet</option>
+                    <option value="HypnoLollipop">Hypno Lollipop</option>
+                    <option value="IceCream">Ice Cream</option>
+                    <option value="InstantRamen">Instant Ramen</option>
+                    <option value="IonGem">Ion Gem</option>
+                    <option value="JackInTheBox">Jack-in-the-Box</option>
+                    <option value="JellyBunny">Jelly Bunny</option>
+                    <option value="JesterHat">Jester Hat</option>
+                    <option value="JingleBell">Jingle Bell</option>
+                    <option value="JollyChimp">Jolly Chimp</option>
+                    <option value="LightSword">Light Sword</option>
+                    <option value="LolPop">Lol Pop</option>
+                    <option value="LowRider">Low Rider</option>
+                    <option value="LuckyLocket">Lucky Locket</option>
+                    <option value="LunarSnake">Lunar Snake</option>
+                    <option value="LushBouquet">Lush Bouquet</option>
+                    <option value="MadPumpkin">Mad Pumpkin</option>
+                    <option value="MagicPotion">Magic Potion</option>
+                    <option value="MightyArm">Mighty Arm</option>
+                    <option value="MiniOscar">Mini Oscar</option>
+                    <option value="MirageLamp">Mirage Lamp</option>
+                    <option value="MoneyPot">Money Pot</option>
+                    <option value="MoonPendant">Moon Pendant</option>
+                    <option value="MousseCake">Mousse Cake</option>
+                    <option value="NailBracelet">Nail Bracelet</option>
+                    <option value="NekoHelmet">Neko Helmet</option>
+                    <option value="PartySparkler">Party Sparkler</option>
+                    <option value="PerfumeBottle">Perfume Bottle</option>
+                    <option value="PetSnake">Pet Snake</option>
+                    <option value="PoolFloat">Pool Float</option>
+                    <option value="PreciousPeach">Precious Peach</option>
+                    <option value="RareBird">Rare Bird</option>
+                    <option value="RestlessJar">Restless Jar</option>
+                    <option value="SakuraFlower">Sakura Flower</option>
+                    <option value="SantaHat">Santa Hat</option>
+                    <option value="SharpTongue">Sharp Tongue</option>
+                    <option value="SignetRing">Signet Ring</option>
+                    <option value="SkyStiletto">Sky Stiletto</option>
+                    <option value="SleighBell">Sleigh Bell</option>
+                    <option value="SnakeBox">Snake Box</option>
+                    <option value="SnoopCigar">Snoop Cigar</option>
+                    <option value="SnowGlobe">Snow Globe</option>
+                    <option value="SnowMitten">Snow Mitten</option>
+                    <option value="SpicedWine">Spiced Wine</option>
+                    <option value="SpringBasket">Spring Basket</option>
+                    <option value="SpyAgaric">Spy Agaric</option>
+                    <option value="StarNotepad">Star Notepad</option>
+                    <option value="StellarRocket">Stellar Rocket</option>
+                    <option value="SurgeBoard">Surge Board</option>
+                    <option value="SwagBag">Swag Bag</option>
+                    <option value="TamaGadget">Tama Gadget</option>
+                    <option value="TimelessBook">Timeless Book</option>
+                    <option value="TopHat">Top Hat</option>
+                    <option value="ViceCream">Vice Cream</option>
+                    <option value="VintageCigar">Vintage Cigar</option>
+                    <option value="VoodooDoll">Voodoo Doll</option>
+                    <option value="WestsideSign">Westside Sign</option>
+                    <option value="WhipCupcake">Whip Cupcake</option>
+                    <option value="WinterWreath">Winter Wreath</option>
+                </optgroup>
             </select>
-            
-            <label for="customGift">Или введите название вручную (если нового нет в списке):</label>
-            <input type="text" id="customGift" placeholder="Например: StarBox">
-            <div class="note">Если поле заполнено, приоритет отдается введенному тексту.</div>
 
-            <label for="bgType">Выберите фон (оформление):</label>
-            <select id="bgType">
+            <label for="customGift">Или введите название вручную:</label>
+            <input type="text" id="customGift" placeholder="Например: NewGiftName">
+            <div class="hint-text">Если поле заполнено, выбор из выпадающего списка игнорируется.</div>
+
+            <label for="bgSelect">Фон (Backdrop)</label>
+            <select id="bgSelect">
                 <option value="ALL">🎨 ВСЕ Фоны (Любые)</option>
-                <option value="Standard">⚪ Стандартный</option>
+                <option value="Standard">⚪ Standard</option>
                 <option value="Black Neon">🖤 Black Neon</option>
-                <option value="Gold">🟡 Gold / Золотой</option>
-                <option value="Cyber">🟦 Cyber / Неоновый синий</option>
-                <option value="Red">🔴 Red / Кровавый</option>
-                <option value="Emerald">🟢 Emerald / Изумрудный</option>
-                <option value="Purple">🟣 Purple / Фиолетовый</option>
+                <option value="Gold">🟡 Gold</option>
+                <option value="Cyber">🟦 Cyber</option>
+                <option value="Red">🔴 Red</option>
+                <option value="Emerald">🟢 Emerald</option>
+                <option value="Purple">🟣 Purple</option>
+                <option value="Crimson">🍷 Crimson</option>
+                <option value="Azure">🔷 Azure</option>
             </select>
         </div>
 
-        <div class="card">
-            <label>Диапазон стоимости (TON):</label>
-            <div class="price-group">
-                <input type="number" id="minPrice" placeholder="Мин" value="0">
-                <input type="number" id="maxPrice" placeholder="Макс" value="50000">
+        <div class="section-card">
+            <label>Диапазон цены (TON)</label>
+            <div class="price-row">
+                <div>
+                    <input type="number" id="minPrice" placeholder="Мин" value="0" min="0">
+                </div>
+                <div>
+                    <input type="number" id="maxPrice" placeholder="Макс" value="50000" min="0">
+                </div>
             </div>
         </div>
 
-        <button class="btn-save" id="saveBtn">Сохранить фильтры</button>
+        <button class="submit-btn" id="saveBtn">Сохранить фильтры</button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
+        const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        document.getElementById('saveBtn').addEventListener('click', function() {
-            let giftSelect = document.getElementById('giftType').value;
-            let customGift = document.getElementById('customGift').value.trim();
-            let bg = document.getElementById('bgType').value;
-            let minP = document.getElementById('minPrice').value || 0;
-            let maxP = document.getElementById('maxPrice').value || 50000;
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const selectGift = document.getElementById('giftSelect').value;
+            const customGift = document.getElementById('customGift').value.trim();
+            const background = document.getElementById('bgSelect').value;
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || 50000;
 
-            let finalGift = customGift !== "" ? customGift : giftSelect;
+            const finalGift = customGift !== "" ? customGift : selectGift;
 
-            let settingsData = {
+            const payload = {
                 action: "save_settings",
                 gift_type: finalGift,
-                background: bg,
-                min_price: parseFloat(minP),
-                max_price: parseFloat(maxP)
+                background: background,
+                min_price: minPrice,
+                max_price: maxPrice
             };
 
-            tg.sendData(JSON.stringify(settingsData));
-            tg.close();
+            try {
+                tg.sendData(JSON.stringify(payload));
+                tg.close();
+            } catch (e) {
+                alert("Ошибка отправки данных: " + e.message);
+            }
         });
     </script>
 </body>
