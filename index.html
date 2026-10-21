@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gifts Tracker Settings</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --hint-color: #aaaaaa;
+            --btn-color: #2481cc;
+            --input-bg: #2a2a2a;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--tg-theme-bg-color, var(--bg-color));
+            color: var(--tg-theme-text-color, var(--text-color));
+            margin: 0; padding: 16px; box-sizing: border-box;
+        }
+        .container { max-width: 400px; margin: 0 auto; }
+        h2 { text-align: center; font-size: 20px; margin-bottom: 20px; }
+        .card {
+            background-color: var(--tg-theme-secondary-bg-color, var(--card-bg));
+            padding: 16px; border-radius: 12px; margin-bottom: 16px;
+        }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--hint-color); font-weight: 500; }
+        select, input {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            background-color: var(--input-bg); color: #fff; font-size: 15px; box-sizing: border-box; margin-bottom: 12px; outline: none;
+        }
+        .price-group { display: flex; gap: 10px; }
+        .price-group input { margin-bottom: 0; }
+        .btn-save {
+            width: 100%; padding: 14px; border-radius: 10px; border: none;
+            background-color: var(--tg-theme-button-color, var(--btn-color));
+            color: var(--tg-theme-button-text-color, #fff); font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎁 Настройки отслеживания</h2>
+        <div class="card">
+            <label for="giftType">Выберите подарок:</label>
+            <select id="giftType">
+                <option value="ALL">🌟 Все подарки</option>
+                <option value="Red Star">⭐ Red Star</option>
+                <option value="Teddy Bear">🧸 Teddy Bear</option>
+                <option value="Peach">🍑 Peach</option>
+                <option value="Diamond">💎 Diamond</option>
+            </select>
+
+            <label for="bgType">Выберите фон:</label>
+            <select id="bgType">
+                <option value="ALL">🎨 Все фоны</option>
+                <option value="Black Neon">🖤 Black Neon</option>
+                <option value="Gold">🟡 Gold</option>
+                <option value="Cyber">🟦 Cyber</option>
+            </select>
+        </div>
+
+        <div class="card">
+            <label>Диапазон стоимости (TON):</label>
+            <div class="price-group">
+                <input type="number" id="minPrice" placeholder="Мин" value="0">
+                <input type="number" id="maxPrice" placeholder="Макс" value="10000">
+            </div>
+        </div>
+
+        <button class="btn-save" id="saveBtn">Сохранить фильтры</button>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            let gift = document.getElementById('giftType').value;
+            let bg = document.getElementById('bgType').value;
+            let minP = document.getElementById('minPrice').value || 0;
+            let maxP = document.getElementById('maxPrice').value || 10000;
+
+            let settingsData = {
+                action: "save_settings",
+                gift_type: gift,
+                background: bg,
+                min_price: parseFloat(minP),
+                max_price: parseFloat(maxP)
+            };
+
+            // Передаем данные боту
+            tg.sendData(JSON.stringify(settingsData));
+            tg.close();
+        });
+    </script>
+</body>
+</html>
